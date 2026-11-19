@@ -23,12 +23,12 @@ The application suggests **low-emission daily routines**, **indoor air quality (
 
 ### 3. 🎯 Direct Impact & Community Multiplier Calculator
 - **Berkeley Earth Cigarette Equivalency**: Transparent conversion where $\sim 22\,\mu\text{g/m}^3$ of $\text{PM}_{2.5}$ exposure over 24 hours ($528\,\mu\text{g/m}^3\cdot\text{hours}$) equals inhaling 1 cigarette.
-- **Personal Emissions Curtailed**: Real-time tracking of avoided cold starts, consolidated vehicle-km, eliminated wood/biomass burning ($\text{kg CO}_2\text{e}$, $\text{g PM}_{2.5}$, $\text{g NO}_x$).
+- **Personal Emissions Curtailed**: Real-time tracking of avoided cold starts, consolidated vehicle-km and eliminated wood/biomass burning.
 - **Community Multiplier Simulator**: Projects collective neighborhood outcomes across 10, 100, 1,000, and 10,000 households over a 30-day winter smog inversion, including estimated pediatric emergency asthma admissions prevented.
 
 ### 4. 🤖 Dual-Engine Gen AI Assistant
-- **Google Gemini 2.5 Flash Integration**: Real-time generative reasoning powered by Google Gemini, equipped with specialized system instructions, atmospheric grounding, and scenario analysis.
-- **Local Smog Intelligence Engine (100% Offline-Resilient)**: Built-in local reasoning engine that performs semantic intent classification, IAQ knowledge retrieval, and impact calculations out-of-the-box with **zero external dependencies and zero API key requirement**.
+- **Google Gemini 2.5 Flash Integration**: Real-time generative reasoning powered by Google Gemini, equipped with specialized system instructions, atmospheric grounding and scenario analysis.
+- **Local Smog Intelligence Engine (100% Offline-Resilient)**: Built-in local reasoning engine that performs semantic intent classification, IAQ knowledge retrieval and impact calculations out-of-the-box with **zero external dependencies and zero API key requirement**.
 
 ---
 
