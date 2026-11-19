@@ -9,16 +9,16 @@ The application suggests **low-emission daily routines**, **indoor air quality (
 ## 🌟 Key Features
 
 ### 1. 📅 Low-Emission Daily Routines Synchronized with Diurnal Inversion
-- **Thermal Inversion Cycle Awareness**: Winter smog is exacerbated by radiation cooling trapping a stagnant boundary layer ($<100\text{m}$) at night and dawn.
-- **Hourly Activity Timing**: Explicitly alerts users to avoid outdoor physical exertion during morning rush hour peaks (`06:00 - 09:30 AM`) and night traps (`07:00 - 11:00 PM`).
-- **Optimal Solar Mixing Window**: Identifies the daily clean air window (`01:00 PM - 03:30 PM`) when solar updrafts puncture the inversion lid, enabling safe home flush ventilation, outdoor chores and school transit.
+- **Thermal Inversion Cycle Awareness**: Winter smog is exacerbated by radiation cooling trapping a stagnant boundary layer at night and dawn.
+- **Hourly Activity Timing**: Explicitly alerts users to avoid outdoor physical exertion during morning rush hour peaks and night traps.
+- **Optimal Solar Mixing Window**: Identifies the daily clean air window  when solar updrafts puncture the inversion lid, enabling safe home flush ventilation, outdoor chores and school transit.
 
 ### 2. 🛠️ Verified Indoor Air Quality (IAQ) Hacks & DIY Purifier Lab
 - **Corsi-Rosenthal Box Builder & CADR Calculator**: Step-by-step assembly of open-source 4/5-filter MERV 13 box fan purifiers delivering 450–560 CFM of clean air for under \$75 (outperforming \$600 commercial HEPA units).
 - **The Fan Shroud Engineering Rule**: Explains the critical 15" circular cardboard shroud that eliminates reverse air recirculation at fan corners and boosting efficiency by 40%.
 - **Window & Door Weatherstripping**: The "Dollar Bill Test" and perimeter draft sealing that cuts outdoor particle infiltration by 55–70%.
-- **Kitchen Combustion Mitigation**: Back-burner cooking rules, range hood pre-exhaust timing, portable induction swaps to prevent hazardous indoor $\text{NO}_2$ and $\text{PM}_{2.5}$ spikes ($>400\,\mu\text{g/m}^3$).
-- **Winter Humidifier Mineral Trap**: Crucial warning against tap water in ultrasonic humidifiers (which shatters minerals into respirable "white dust" $\text{PM}_{2.5}$), guiding families toward distilled water or evaporative wick humidifiers.
+- **Kitchen Combustion Mitigation**: Back-burner cooking rules, range hood pre-exhaust timing and portable induction swaps to prevent hazardous indoor.
+- **Winter Humidifier Mineral Trap**: Crucial warning against tap water in ultrasonic humidifiers, guiding families toward distilled water or evaporative wick humidifiers.
 - **Houseplants Reality Check**: Evidence-based debunking of the 1989 NASA chamber myth—explaining why houseplants cannot replace particulate filtration in ventilated homes.
 
 ### 3. 🎯 Direct Impact & Community Multiplier Calculator
