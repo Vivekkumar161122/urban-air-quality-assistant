@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0284c7" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    <linearGradient id="shieldGrad" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#06b6d4" />
+    </linearGradient>
+  </defs>
+  <!-- Background Shield -->
+  <path d="M32 4L10 14V30C10 44.5 19.5 56.5 32 60C44.5 56.5 54 44.5 54 30V14L32 4Z" fill="url(#shieldGrad)" />
+  <!-- Inner Clean Air Heart & Airflow -->
+  <path d="M32 10L14 18V30C14 42 21.8 52 32 55C42.2 52 50 42 50 30V18L32 10Z" fill="#0f172a" opacity="0.85" />
+  <!-- Clean Leaf / Breeze Stream -->
+  <path d="M22 36C22 28 30 22 42 22C42 34 36 42 28 42C24 42 22 40 22 36Z" fill="#10b981" />
+  <path d="M22 36C26 36 34 32 42 22" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" />
+  <!-- Air Purifier Clean Particles -->
+  <circle cx="20" cy="24" r="2.5" fill="#38bdf8" />
+  <circle cx="44" cy="40" r="2" fill="#38bdf8" />
+  <circle cx="46" cy="18" r="1.5" fill="#38bdf8" />
+</svg>

@@ -1,0 +1,738 @@
+/**
+ * UI Component Styles: Cards, Dials, Timelines, Calculator Sliders, AI Chat, Dialogs
+ */
+
+/* Grid and Layout Utilities */
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.25rem;
+}
+
+/* Card System */
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.card-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-text-main);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.card-subtitle {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  margin-top: 0.15rem;
+}
+
+/* AQI Dashboard Dial & Metrics */
+.aqi-hero-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.aqi-display-group {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.aqi-gauge-wrapper {
+  position: relative;
+  width: 170px;
+  height: 170px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.aqi-circular-svg {
+  transform: rotate(-90deg);
+  width: 100%;
+  height: 100%;
+}
+
+.aqi-circle-bg {
+  fill: none;
+  stroke: var(--color-border);
+  stroke-width: 14;
+}
+
+.aqi-circle-val {
+  fill: none;
+  stroke-width: 14;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1s ease, stroke 0.4s ease;
+}
+
+.aqi-number-container {
+  position: absolute;
+  text-align: center;
+}
+
+.aqi-large-number {
+  font-size: 2.75rem;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--color-text-main);
+}
+
+.aqi-unit-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.aqi-meta-details {
+  flex: 1;
+  min-width: 220px;
+}
+
+.aqi-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--radius-full);
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 0.65rem;
+}
+
+.aqi-explanation-text {
+  font-size: 0.925rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+  margin-bottom: 0.85rem;
+}
+
+.aqi-submetrics {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.submetric-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.submetric-label {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.submetric-val {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-text-main);
+}
+
+/* Diurnal Inversion Hourly Chart (CSS Bar Graph) */
+.inversion-chart-container {
+  margin-top: 1rem;
+  background: var(--color-surface-hover);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  border: 1px solid var(--color-border);
+}
+
+.chart-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.chart-bars-scroll {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+  height: 130px;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+
+.chart-bar-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  min-width: 38px;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.chart-bar-fill {
+  width: 100%;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  transition: height 0.5s ease;
+  min-height: 6px;
+  position: relative;
+}
+
+.chart-bar-fill.safe-window {
+  background: var(--color-success);
+}
+
+.chart-bar-fill.hazard-window {
+  background: var(--color-danger);
+}
+
+.chart-bar-fill.moderate-window {
+  background: var(--color-warning);
+}
+
+.chart-hour-label {
+  font-size: 0.68rem;
+  color: var(--color-text-muted);
+  margin-top: 0.35rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Routine Timeline Cards */
+.timeline-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  position: relative;
+}
+
+.timeline-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-left: 5px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  position: relative;
+}
+
+.timeline-card.hazard {
+  border-left-color: var(--color-danger);
+}
+
+.timeline-card.safe {
+  border-left-color: var(--color-success);
+}
+
+.timeline-card.moderate {
+  border-left-color: var(--color-warning);
+}
+
+.timeline-time-badge {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: flex;
+  justify-content: space-between;
+}
+
+.timeline-action-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-text-main);
+}
+
+.timeline-sustainable-box {
+  background: var(--color-surface-hover);
+  border-radius: var(--radius-sm);
+  padding: 0.65rem 0.85rem;
+  font-size: 0.85rem;
+  border: 1px dashed var(--color-border);
+}
+
+.timeline-impact-pill {
+  align-self: flex-start;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: var(--color-primary-light);
+  color: var(--color-primary-hover);
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-full);
+}
+
+/* IAQ Hacks Grid & Details */
+.hack-filter-bar {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+}
+
+.filter-chip {
+  padding: 0.4rem 0.85rem;
+  border-radius: var(--radius-full);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  font-size: 0.825rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--color-text-muted);
+  transition: all 0.2s ease;
+}
+
+.filter-chip:hover {
+  border-color: var(--color-primary);
+  color: var(--color-text-main);
+}
+
+.filter-chip.active {
+  background: var(--color-primary);
+  color: #ffffff;
+  border-color: var(--color-primary);
+}
+
+.hack-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.hack-badge-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.hack-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-hover);
+  color: var(--color-text-muted);
+}
+
+.hack-badge.highlight {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+.hack-instructions-list {
+  margin: 0.75rem 0 0.75rem 1.25rem;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.hack-critical-warning {
+  background: var(--color-warning-bg);
+  border-left: 4px solid var(--color-warning);
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  color: var(--color-text-main);
+  margin-top: 0.75rem;
+}
+
+/* Corsi-Rosenthal Calculator Form */
+.cadr-calc-box {
+  background: var(--color-surface-hover);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  border: 1px solid var(--color-border);
+  margin-top: 1rem;
+}
+
+.calc-inputs-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.input-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.input-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.input-control {
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text-main);
+  font-size: 0.9rem;
+  font-family: inherit;
+}
+
+.input-control:focus {
+  border-color: var(--color-primary);
+}
+
+.calc-results-badge {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.25rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.calc-metric-stat {
+  display: flex;
+  flex-direction: column;
+}
+
+.calc-metric-val {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--color-primary);
+}
+
+/* Impact Calculator Sliders & Meters */
+.impact-meter-card {
+  background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-surface-hover) 100%);
+}
+
+.slider-wrapper {
+  margin-bottom: 1.25rem;
+}
+
+.slider-label-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+
+.range-slider {
+  width: 100%;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--color-border);
+  outline: none;
+  cursor: pointer;
+  accent-color: var(--color-primary);
+}
+
+.cigarette-meter-box {
+  background: var(--color-danger-bg);
+  border: 1px solid var(--color-danger);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.cigarette-hero-number {
+  font-size: 3rem;
+  font-weight: 900;
+  color: var(--color-danger);
+  line-height: 1;
+}
+
+.cigarette-hero-desc {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-text-main);
+  margin-top: 0.35rem;
+}
+
+.community-table-container {
+  overflow-x: auto;
+  margin-top: 1rem;
+}
+
+.responsive-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  text-align: left;
+}
+
+.responsive-table th, .responsive-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.responsive-table th {
+  background: var(--color-surface-hover);
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+/* AI Chat Assistant Interface */
+.chat-window {
+  display: flex;
+  flex-direction: column;
+  height: 580px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.chat-bubble {
+  max-width: 85%;
+  border-radius: var(--radius-md);
+  padding: 1rem 1.25rem;
+  font-size: 0.925rem;
+  line-height: 1.55;
+  position: relative;
+  word-break: break-word;
+}
+
+.chat-bubble.user {
+  align-self: flex-end;
+  background: var(--color-primary);
+  color: #ffffff;
+  border-bottom-right-radius: var(--radius-sm);
+}
+
+.chat-bubble.assistant {
+  align-self: flex-start;
+  background: var(--color-surface-hover);
+  color: var(--color-text-main);
+  border: 1px solid var(--color-border);
+  border-bottom-left-radius: var(--radius-sm);
+}
+
+.chat-bubble.assistant h3, .chat-bubble.assistant h4 {
+  margin: 0.5rem 0 0.35rem 0;
+  color: var(--color-text-main);
+}
+
+.chat-bubble.assistant ul, .chat-bubble.assistant ol {
+  margin-left: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.chat-bubble.assistant strong {
+  color: var(--color-primary);
+}
+
+.chat-bubble.assistant table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.75rem 0;
+  font-size: 0.825rem;
+}
+
+.chat-bubble.assistant th, .chat-bubble.assistant td {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--color-border);
+}
+
+.chat-bubble-source {
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+  margin-top: 0.4rem;
+  display: block;
+}
+
+.scenario-chips-row {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding: 0.75rem 1.25rem;
+  background: var(--color-surface-hover);
+  border-top: 1px solid var(--color-border);
+  scrollbar-width: thin;
+}
+
+.scenario-chip {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  padding: 0.35rem 0.85rem;
+  font-size: 0.8rem;
+  color: var(--color-text-main);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+
+.scenario-chip:hover {
+  background: var(--color-primary-light);
+  border-color: var(--color-primary);
+  color: var(--color-primary-hover);
+}
+
+.chat-input-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.25rem;
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+}
+
+.chat-input {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-main);
+  font-size: 0.925rem;
+  font-family: inherit;
+}
+
+.chat-input:focus {
+  border-color: var(--color-primary);
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1.25rem;
+  font-size: 0.925rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.btn-primary:hover {
+  background: var(--color-primary-hover);
+}
+
+.btn-secondary {
+  background: var(--color-surface-hover);
+  color: var(--color-text-main);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1.25rem;
+  font-size: 0.925rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-secondary:hover {
+  background: var(--color-border);
+}
+
+/* Modal Dialog (Native Accessible <dialog>) */
+dialog.accessible-modal {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  color: var(--color-text-main);
+  padding: 2rem;
+  max-width: 540px;
+  width: 90%;
+  margin: auto;
+  box-shadow: var(--shadow-lg);
+}
+
+dialog::backdrop {
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(4px);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.modal-title {
+  font-size: 1.3rem;
+  font-weight: 800;
+}
+
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-bottom: 1.75rem;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .header-container {
+    padding: 0.5rem 1rem;
+  }
+  .brand-title {
+    font-size: 1.1rem;
+  }
+  .nav-tab {
+    padding: 0.65rem 0.85rem;
+    font-size: 0.825rem;
+  }
+  .chat-bubble {
+    max-width: 92%;
+  }
+  .aqi-large-number {
+    font-size: 2.25rem;
+  }
+}
