@@ -1,6 +1,6 @@
 # Urban Air Quality Assistant 
 
-A production-grade, Gen AI-powered assistant engineered to help families, schools and vulnerable communities navigate severe winter smog and urban air pollution. 
+Gen AI-powered assistant engineered to help families, schools and vulnerable communities navigate severe winter smog and urban air pollution. 
 
 The application suggests **low-emission daily routines**, **indoor air quality (IAQ) hacks**, **sustainable alternatives** tailored to local atmospheric topography and lifestyle profiles while **clearly quantifying the direct impact of their choices**.
 
