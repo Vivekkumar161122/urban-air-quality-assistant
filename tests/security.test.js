@@ -33,12 +33,11 @@ test('Security - sanitizeNumber enforces bounds and fallbacks', () => {
 
 test('Security - checkRateLimit throttles excessive requests', () => {
   const testIp = '192.168.1.99';
-  let lastResult = null;
 
   // Simulate 60 allowed requests
   for (let i = 0; i < 60; i++) {
-    lastResult = checkRateLimit(testIp);
-    assert.equal(lastResult.allowed, true, `Request ${i+1} should be allowed`);
+    const result = checkRateLimit(testIp);
+    assert.equal(result.allowed, true, `Request ${i + 1} should be allowed`);
   }
 
   // 61st request should be rejected

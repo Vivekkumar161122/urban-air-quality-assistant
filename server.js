@@ -50,12 +50,13 @@ function streamFile(res, filePath, contentType, cacheControl) {
   }
 
   const stream = fs.createReadStream(filePath);
-  stream.on('error', () => {
+  stream.on('error', (err) => {
+    console.error(`[Static] Stream error for ${filePath}: ${err.message}`);
     if (!res.headersSent) {
       res.statusCode = 500;
       res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+      res.end('500 Internal Server Error');
     }
-    res.end('500 Internal Server Error');
   });
   stream.pipe(res);
 }
@@ -84,9 +85,7 @@ const server = http.createServer(async (req, res) => {
 
   // Enforce strict directory containment inside PUBLIC_DIR
   if (filePath !== PUBLIC_DIR && !filePath.startsWith(`${PUBLIC_DIR}${path.sep}`)) {
-    res.statusCode = 403;
-    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-    return res.end('403 Forbidden');
+    return sendJson(res, 403, { error: 'Forbidden' });
   }
 
   if (fs.existsSync(filePath) && fs.statSync(filePath).isDirectory()) {

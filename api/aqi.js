@@ -53,6 +53,11 @@ const AQI_CATEGORY_BANDS = [
   }
 ];
 
+/**
+ * Maps a numeric AQI value to its EPA category band.
+ * @param {number} aqi
+ * @returns {{ maxAqi: number, category: string, color: string, healthSummary: string }}
+ */
 function classifyAqi(aqi) {
   return AQI_CATEGORY_BANDS.find((band) => aqi <= band.maxAqi) || AQI_CATEGORY_BANDS[AQI_CATEGORY_BANDS.length - 1];
 }
