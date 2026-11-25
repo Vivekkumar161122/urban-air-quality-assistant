@@ -9,19 +9,26 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-// API Handlers
 import chatHandler from './api/chat.js';
 import routineHandler from './api/routine.js';
 import hacksHandler from './api/hacks.js';
 import impactHandler from './api/impact.js';
 import aqiHandler from './api/aqi.js';
-import { SECURITY_HEADERS } from './lib/security.js';
+import { applySecurityHeaders, sendJson } from './lib/http.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const PUBLIC_DIR = path.join(__dirname, 'public');
+const PUBLIC_DIR = path.resolve(__dirname, 'public');
 
 const PORT = Number(process.env.PORT) || 3000;
+
+const API_ROUTES = new Map([
+  ['/api/chat', chatHandler],
+  ['/api/routine', routineHandler],
+  ['/api/hacks', hacksHandler],
+  ['/api/impact', impactHandler],
+  ['/api/aqi', aqiHandler]
+]);
 
 const MIME_TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -35,55 +42,62 @@ const MIME_TYPES = {
   '.txt': 'text/plain; charset=utf-8'
 };
 
-const server = http.createServer(async (req, res) => {
-  // Apply standard security headers
-  Object.entries(SECURITY_HEADERS).forEach(([key, val]) => res.setHeader(key, val));
-
-  const parsedUrl = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
-  const pathname = parsedUrl.pathname;
-
-  // Route API endpoints
-  if (pathname.startsWith('/api/')) {
-    if (pathname === '/api/chat') {
-      return chatHandler(req, res);
-    }
-    if (pathname === '/api/routine') {
-      return routineHandler(req, res);
-    }
-    if (pathname === '/api/hacks') {
-      return hacksHandler(req, res);
-    }
-    if (pathname === '/api/impact') {
-      return impactHandler(req, res);
-    }
-    if (pathname === '/api/aqi') {
-      return aqiHandler(req, res);
-    }
-
-    res.statusCode = 404;
-    res.setHeader('Content-Type', 'application/json');
-    return res.end(JSON.stringify({ error: `API route not found: ${pathname}` }));
+function streamFile(res, filePath, contentType, cacheControl) {
+  res.statusCode = 200;
+  res.setHeader('Content-Type', contentType);
+  if (cacheControl) {
+    res.setHeader('Cache-Control', cacheControl);
   }
 
-  // Serve static files from /public
-  let relativePath = pathname === '/' ? 'index.html' : pathname;
-  // Normalize and prevent directory traversal
-  const safePath = path.normalize(relativePath).replace(/^(\.\.[\/\\])+/, '');
-  let filePath = path.join(PUBLIC_DIR, safePath);
+  const stream = fs.createReadStream(filePath);
+  stream.on('error', () => {
+    if (!res.headersSent) {
+      res.statusCode = 500;
+      res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+    }
+    res.end('500 Internal Server Error');
+  });
+  stream.pipe(res);
+}
 
-  // If pointing to directory without trailing file, try index.html
+const server = http.createServer(async (req, res) => {
+  applySecurityHeaders(res);
+
+  let pathname;
+  try {
+    const parsedUrl = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`);
+    pathname = parsedUrl.pathname;
+  } catch {
+    return sendJson(res, 400, { error: 'Invalid request URL' });
+  }
+
+  if (pathname.startsWith('/api/')) {
+    const handler = API_ROUTES.get(pathname);
+    if (handler) {
+      return handler(req, res);
+    }
+    return sendJson(res, 404, { error: `API route not found: ${pathname}` });
+  }
+
+  const relativePath = pathname === '/' ? 'index.html' : pathname.replace(/^\/+/, '');
+  let filePath = path.resolve(PUBLIC_DIR, relativePath);
+
+  // Enforce strict directory containment inside PUBLIC_DIR
+  if (filePath !== PUBLIC_DIR && !filePath.startsWith(`${PUBLIC_DIR}${path.sep}`)) {
+    res.statusCode = 403;
+    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+    return res.end('403 Forbidden');
+  }
+
   if (fs.existsSync(filePath) && fs.statSync(filePath).isDirectory()) {
     filePath = path.join(filePath, 'index.html');
   }
 
   fs.stat(filePath, (err, stats) => {
     if (err || !stats.isFile()) {
-      // Fallback to index.html for Single Page Application navigation
       const indexPath = path.join(PUBLIC_DIR, 'index.html');
       if (fs.existsSync(indexPath)) {
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'text/html; charset=utf-8');
-        return fs.createReadStream(indexPath).pipe(res);
+        return streamFile(res, indexPath, 'text/html; charset=utf-8');
       }
       res.statusCode = 404;
       res.setHeader('Content-Type', 'text/plain; charset=utf-8');
@@ -92,30 +106,23 @@ const server = http.createServer(async (req, res) => {
 
     const ext = path.extname(filePath).toLowerCase();
     const contentType = MIME_TYPES[ext] || 'application/octet-stream';
+    const cacheControl = (ext === '.css' || ext === '.js' || ext === '.svg')
+      ? 'public, max-age=86400'
+      : 'no-cache';
 
-    // Cache static assets (CSS, JS, SVG)
-    if (ext === '.css' || ext === '.js' || ext === '.svg') {
-      res.setHeader('Cache-Control', 'public, max-age=86400');
-    } else {
-      res.setHeader('Cache-Control', 'no-cache');
-    }
-
-    res.statusCode = 200;
-    res.setHeader('Content-Type', contentType);
-    fs.createReadStream(filePath).pipe(res);
+    return streamFile(res, filePath, contentType, cacheControl);
   });
 });
 
 server.listen(PORT, '0.0.0.0', () => {
-  console.log(`=======================================================`);
-  console.log(` Urban Air Quality Assistant Server Running`);
+  console.log('=======================================================');
+  console.log(' Urban Air Quality Assistant Server Running');
   console.log(` Local URL: http://localhost:${PORT}`);
   console.log(` Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(` Vercel-Ready & Platform-Independent`);
-  console.log(`=======================================================`);
+  console.log(' Vercel-Ready & Platform-Independent');
+  console.log('=======================================================');
 });
 
-// Graceful termination
 process.on('SIGINT', () => {
   server.close(() => process.exit(0));
 });

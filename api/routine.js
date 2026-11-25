@@ -4,17 +4,21 @@
  */
 
 import { generateDailyRoutine, LOCATION_ARCHETYPES, LIFESTYLE_PERSONAS } from '../lib/routines-data.js';
-import { sanitizeString, sanitizeNumber, SECURITY_HEADERS, parseSafeJson } from '../lib/security.js';
+import {
+  HttpError,
+  applySecurityHeaders,
+  handleCorsPreflight,
+  readJsonBody,
+  sendJson,
+  sendMethodNotAllowed
+} from '../lib/http.js';
+import { sanitizeString, sanitizeNumber } from '../lib/security.js';
 
 export default async function handler(req, res) {
-  Object.entries(SECURITY_HEADERS).forEach(([key, val]) => res.setHeader(key, val));
+  applySecurityHeaders(res);
 
-  if (req.method === 'OPTIONS') {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-    res.statusCode = 204;
-    return res.end();
+  if (handleCorsPreflight(req, res, { methods: 'GET, POST, OPTIONS' })) {
+    return;
   }
 
   let locationKey = 'river_valley_basin';
@@ -29,26 +33,21 @@ export default async function handler(req, res) {
       aqi = sanitizeNumber(url.searchParams.get('aqi'), 10, 999, 185);
     }
   } else if (req.method === 'POST') {
-    let body = req.body;
-    if (typeof body === 'string') {
-      body = parseSafeJson(body);
-    } else if (!body && req.readable) {
-      const buffers = [];
-      for await (const chunk of req) {
-        buffers.push(chunk);
+    try {
+      const body = await readJsonBody(req);
+      locationKey = body.locationKey || locationKey;
+      personaKey = body.personaKey || personaKey;
+      if (body.aqi !== undefined) {
+        aqi = sanitizeNumber(body.aqi, 10, 999, 185);
       }
-      body = parseSafeJson(Buffer.concat(buffers).toString('utf-8'));
-    }
-    body = body || {};
-    locationKey = body.locationKey || locationKey;
-    personaKey = body.personaKey || personaKey;
-    if (body.aqi !== undefined) {
-      aqi = sanitizeNumber(body.aqi, 10, 999, 185);
+    } catch (err) {
+      if (err instanceof HttpError) {
+        return sendJson(res, err.statusCode, { error: err.message });
+      }
+      return sendJson(res, 500, { error: err.message });
     }
   } else {
-    res.statusCode = 405;
-    res.setHeader('Content-Type', 'application/json');
-    return res.end(JSON.stringify({ error: 'Method Not Allowed' }));
+    return sendMethodNotAllowed(res, ['GET', 'POST']);
   }
 
   const routine = generateDailyRoutine({
@@ -57,11 +56,9 @@ export default async function handler(req, res) {
     baselineAqi: aqi
   });
 
-  res.statusCode = 200;
-  res.setHeader('Content-Type', 'application/json');
-  return res.end(JSON.stringify({
+  return sendJson(res, 200, {
     ...routine,
-    availableLocations: Object.values(LOCATION_ARCHETYPES).map(l => ({ id: l.id, name: l.name })),
-    availablePersonas: Object.values(LIFESTYLE_PERSONAS).map(p => ({ id: p.id, name: p.name }))
-  }));
+    availableLocations: Object.values(LOCATION_ARCHETYPES).map((l) => ({ id: l.id, name: l.name })),
+    availablePersonas: Object.values(LIFESTYLE_PERSONAS).map((p) => ({ id: p.id, name: p.name }))
+  });
 }

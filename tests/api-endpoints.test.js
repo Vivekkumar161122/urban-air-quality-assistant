@@ -5,12 +5,14 @@
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { Readable } from 'node:stream';
 
 import aqiHandler from '../api/aqi.js';
 import routineHandler from '../api/routine.js';
 import hacksHandler from '../api/hacks.js';
 import impactHandler from '../api/impact.js';
 import chatHandler from '../api/chat.js';
+import { getClientIp, readJsonBody, HttpError } from '../lib/http.js';
 
 // Mock helper for Node HTTP response
 function createMockResponse() {
@@ -150,4 +152,37 @@ test('API /api/chat - POST handles message and returns synthesis with suggestion
   assert.ok(json.reply && json.reply.length > 50);
   assert.ok(json.suggestions && json.suggestions.length > 0);
   assert.ok(json.source, 'Response must identify source engine');
+});
+
+test('API handlers - OPTIONS preflight and 405 Method Not Allowed', async () => {
+  const resOptions = createMockResponse();
+  await aqiHandler({ method: 'OPTIONS', url: '/api/aqi', headers: {} }, resOptions);
+  assert.equal(resOptions.statusCode, 204);
+  assert.equal(resOptions.headers['access-control-allow-origin'], '*');
+
+  const resMethod = createMockResponse();
+  await impactHandler({ method: 'GET', url: '/api/impact', headers: {} }, resMethod);
+  assert.equal(resMethod.statusCode, 405);
+  assert.equal(resMethod.headers['allow'], 'POST');
+});
+
+test('API /api/chat & /api/hacks - return 400 on invalid JSON or missing message', async () => {
+  const resBadJson = createMockResponse();
+  await hacksHandler({ method: 'POST', url: '/api/hacks', headers: {}, body: '{bad-json' }, resBadJson);
+  assert.equal(resBadJson.statusCode, 400);
+
+  const resMissingMsg = createMockResponse();
+  await chatHandler({ method: 'POST', url: '/api/chat', headers: { 'x-forwarded-for': '10.0.0.1, 10.0.0.2' }, body: {} }, resMissingMsg);
+  assert.equal(resMissingMsg.statusCode, 400);
+});
+
+test('HTTP helpers - getClientIp & readJsonBody stream size guard', async () => {
+  assert.equal(getClientIp({ headers: { 'x-forwarded-for': '203.0.113.5, 10.0.0.1' } }), '203.0.113.5');
+
+  const streamReq = Readable.from([Buffer.from('x'.repeat(200))]);
+  streamReq.readable = true;
+  await assert.rejects(
+    () => readJsonBody(streamReq, 100),
+    (err) => err instanceof HttpError && err.statusCode === 413
+  );
 });

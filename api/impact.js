@@ -3,38 +3,30 @@
  * Quantifies personal exposure averted, direct emissions avoided, and community scale impacts.
  */
 
-import { calculateExposureReduction, calculateEmissionsAvoided, calculateCommunityMultiplier, UG_M3_HOURS_PER_CIGARETTE } from '../lib/impact-engine.js';
-import { sanitizeNumber, SECURITY_HEADERS, parseSafeJson } from '../lib/security.js';
+import { calculateExposureReduction, calculateEmissionsAvoided, calculateCommunityMultiplier } from '../lib/impact-engine.js';
+import {
+  HttpError,
+  applySecurityHeaders,
+  handleCorsPreflight,
+  readJsonBody,
+  sendJson,
+  sendMethodNotAllowed
+} from '../lib/http.js';
+import { sanitizeNumber } from '../lib/security.js';
 
 export default async function handler(req, res) {
-  Object.entries(SECURITY_HEADERS).forEach(([key, val]) => res.setHeader(key, val));
+  applySecurityHeaders(res);
 
-  if (req.method === 'OPTIONS') {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-    res.statusCode = 204;
-    return res.end();
+  if (handleCorsPreflight(req, res, { methods: 'POST, OPTIONS' })) {
+    return;
   }
 
   if (req.method !== 'POST') {
-    res.statusCode = 405;
-    res.setHeader('Content-Type', 'application/json');
-    return res.end(JSON.stringify({ error: 'Method Not Allowed. Use POST.' }));
+    return sendMethodNotAllowed(res, ['POST']);
   }
 
   try {
-    let body = req.body;
-    if (typeof body === 'string') {
-      body = parseSafeJson(body);
-    } else if (!body && req.readable) {
-      const buffers = [];
-      for await (const chunk of req) {
-        buffers.push(chunk);
-      }
-      body = parseSafeJson(Buffer.concat(buffers).toString('utf-8'));
-    }
-    body = body || {};
+    const body = await readJsonBody(req);
 
     const outdoorPm25 = sanitizeNumber(body.outdoorPm25, 5, 1000, 160);
     const hoursIndoors = sanitizeNumber(body.hoursIndoors, 1, 24, 14);
@@ -72,9 +64,7 @@ export default async function handler(req, res) {
       co2eKg: emissions.co2eKg
     }, participatingHouseholds);
 
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'application/json');
-    return res.end(JSON.stringify({
+    return sendJson(res, 200, {
       parameters: {
         outdoorPm25,
         hoursIndoors,
@@ -92,10 +82,11 @@ export default async function handler(req, res) {
         indoorInfiltrationBaseline: 'Standard residential envelope infiltration is estimated at 72% of outdoor PM2.5; mitigated rooms with DIY/Corsi-Rosenthal air filtration achieve ~18% or lower.',
         pediatricHealthImpact: 'Epidemiological studies indicate ~2.8 pediatric asthma emergency visits prevented per 100 kg of PM2.5 curbed during winter thermal inversions.'
       }
-    }));
+    });
   } catch (err) {
-    res.statusCode = 500;
-    res.setHeader('Content-Type', 'application/json');
-    return res.end(JSON.stringify({ error: err.message }));
+    if (err instanceof HttpError) {
+      return sendJson(res, err.statusCode, { error: err.message });
+    }
+    return sendJson(res, 500, { error: err.message });
   }
 }
